@@ -1,0 +1,9 @@
+#! /usr/bin/python 
+
+import sys
+
+from mysqlfs.fusexmp import main
+
+
+if __name__ == '__main__':
+   sys.exit(main())
