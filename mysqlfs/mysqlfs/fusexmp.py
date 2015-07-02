@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys, errno, stat
+import os, sys, errno, stat, time
 from errno import *
 from stat import *
 import fcntl
@@ -60,8 +60,8 @@ class Xmp(Fuse):
         Fuse.__init__(self, *args, **kw)
 
         # do stuff to set up your filesystem here, if you want
-        #import thread
-        #thread.start_new_thread(self.mythread, ())
+        import thread
+        thread.start_new_thread(self.mythread, ())
         self.root = '/'
         self.user = 'mysqlfs'
         self.database = 'mysqlfs'
@@ -70,16 +70,16 @@ class Xmp(Fuse):
         self.host = 'localhost'
         self.file_class = self.XmpFile
 
-#    def mythread(self):
-#
-#        """
-#        The beauty of the FUSE python implementation is that with the python interp
-#        running in foreground, you can have threads
-#        """
-#        print "mythread: started"
-#        while 1:
-#            time.sleep(120)
-#            print "mythread: ticking"
+    def mythread(self):
+
+        """
+        The beauty of the FUSE python implementation is that with the python interp
+        running in foreground, you can have threads
+        """
+        print "mythread: started"
+        while 1:
+            time.sleep(120)
+            print "mythread: ticking"
 
     def getattr(self, path):
         st = MyStat()
@@ -362,4 +362,7 @@ Userspace nullfs-alike: mirror the filesystem tree from some point on.
 
 
 if __name__ == '__main__':
+    import sys
+    reload(sys)                         # 2
+    sys.setdefaultencoding('utf-8')     # 3
     main()

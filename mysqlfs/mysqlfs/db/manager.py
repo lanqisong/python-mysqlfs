@@ -74,11 +74,11 @@ class DBManager(object):
                         folder_name = folder_names[1]
                     else:
                         folder_name = folder_names[0]
-                sub_names.append(str(folder_name))
+                sub_names.append(unicode(folder_name).encode('utf8'))
 
         files = dbapi.get_files_by_folder_id(parent_id)
         for file in files:
-            sub_names.append(str(file.file_name))
+            sub_names.append(unicode(file.file_name).encode('utf8'))
         return list(set(sub_names))
 
     @staticmethod
@@ -180,6 +180,9 @@ if __name__ == '__main__':
 
     #path = 'K:\\001\'
 
-    path = 'K:\\001\\test2.txt'
-    new_path = 'K:\\001\\test\\test.txt'
-    DBManager.query_rename(path, new_path)
+    #path = 'K:\\001\\test2.txt'
+    #new_path = 'K:\\001\\test\\test.txt'
+    #DBManager.query_rename(path, new_path)
+
+    path = "K:\\06-01-001-000001-0003"
+    print DBManager.query_readdir(path)

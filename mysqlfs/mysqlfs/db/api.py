@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """
 SQLALchemy api for Fuse file system
 """
