@@ -113,6 +113,7 @@ class Xmp(Fuse):
         return os.readlink("." + path)
 
     def readdir(self, path, offset):
+        os.chdir(self.root)
         path = path_linux_to_windows(path)
         persist_names = ['.', '..']
         sub_names = DBManager.query_readdir(path)
