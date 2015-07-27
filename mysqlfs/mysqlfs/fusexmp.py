@@ -94,14 +94,16 @@ class Xmp(Fuse):
         #    return -errno.ENOENT
         
         print "get attr for %s" % path
-        path = path_linux_to_windows(path)
-        is_exist, is_folder, size, link = DBManager.query_getattr(path)
+        is_exist, is_folder, size, link, atime, ctime, mtime = DBManager.query_getattr(path=path)
         if not is_exist:
             return -errno.ENOENT
-        st.st_gid = 1000
-        st.st_uid = 1000
+        st.st_gid = 0
+        st.st_uid = 0
         st.st_size = size
         st.st_nlink = link
+        st.st_atime = atime
+        st.st_ctime = ctime
+        st.st_mtime = mtime
         if is_folder:
             st.st_mode = stat.S_IFDIR | 0777
         else:
@@ -113,10 +115,8 @@ class Xmp(Fuse):
         return os.readlink("." + path)
 
     def readdir(self, path, offset):
-        os.chdir(self.root)
-        path = path_linux_to_windows(path)
         persist_names = ['.', '..']
-        sub_names = DBManager.query_readdir(path)
+        sub_names = DBManager.query_readdir(path=path)
         sub_names = persist_names + sub_names
         print sub_names
         for r in sub_names:
@@ -128,12 +128,12 @@ class Xmp(Fuse):
         #    yield fuse.Direntry(e)
 
     def unlink(self, path):
-        DBManager.query_unlink(path_linux_to_windows(path))
-        os.unlink("." + path)
+        DBManager.query_unlink(path=path)
+        #os.unlink("." + path)
 
     def rmdir(self, path):
-        DBManager.query_rmdir(path_linux_to_windows(path))
-        os.rmdir("." + path)
+        DBManager.query_rmdir(path=path)
+        #os.rmdir("." + path)
 
     def symlink(self, path, path1):
         os.symlink(path, "." + path1)
@@ -226,10 +226,11 @@ class Xmp(Fuse):
 
         def __init__(self, path, flags, *mode):
             fmode = flag2mode(flags)
+            #if fmode == 'w' or fmode == 'w+':
+            #    DBManager.query_open(path_linux_to_windows(path))
+            path = DBManager.query_open(path=path)
             self.file = os.fdopen(os.open("." + path, flags, *mode),
                                   fmode)
-            if fmode == 'w' or fmode == 'w+':
-                DBManager.query_open(path_linux_to_windows(path))
             self.fd = self.file.fileno()
             self.path = path
 

@@ -28,6 +28,41 @@ class FuseBase(object):
 BaseModel = declarative_base(cls=FuseBase)
 
 
+class Magzine(BaseModel):
+    """Represents a magzine"""
+
+    __tablename__ = 'tbl_magzines'
+    __table_args__ = (
+        schema.UniqueConstraint('mag_id', name='uniq_mag0id'),
+        table_args()
+    )
+    mag_id = Column(Integer, primary_key=True)
+    mag_name = Column(String(50))
+    RFID = Column(String(50))
+    drawer_order = Column(Integer)
+    mag_order = Column(Integer)
+
+
+class Slot(BaseModel):
+    """Represents a slot"""
+
+    __tablename__ = 'tbl_slots'
+    __table_args__ = (
+        schema.UniqueConstraint('slot_id', name='uniq_slot0id'),
+        table_args()
+    )
+    slot_id = Column(Integer, primary_key=True)
+    mag_id = Column(Integer)
+    slot_order = Column(Integer)
+    slot_name = Column(String(50))
+    disc_type = Column(Integer)
+    rest_cap = Column(Integer)
+    disc_type_1 = Column(Integer)
+    rest_cap_1 = Column(Integer)
+    disc_side = Column(Integer)
+    comment = Column(String(200))
+
+
 class Folder(BaseModel):
     """Represents a folder"""
 
@@ -38,7 +73,7 @@ class Folder(BaseModel):
     )
     id = Column(Integer, primary_key=True)
     disc_id = Column(Integer)
-    folder_name = Column(String(500))
+    folder_name = Column(String(500, convert_unicode=False))
     disc_dir = Column(String(500))
     sum_files = Column(Integer)
     files = Column(Integer)
@@ -46,6 +81,7 @@ class Folder(BaseModel):
     task_id = Column(Integer)
     disc_num = Column(String(50))
     slot_id = Column(Integer)
+    deleted = Column(Integer)
 
 
 class File(BaseModel):
@@ -66,3 +102,7 @@ class File(BaseModel):
     archive = Column(Integer)
     disc_num = Column(String(50))
     slot_id = Column(Integer)
+    atime = Column(Integer)
+    ctime = Column(Integer)
+    mtime = Column(Integer)
+    deleted = Column(Integer)
