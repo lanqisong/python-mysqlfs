@@ -115,6 +115,7 @@ class Xmp(Fuse):
         return os.readlink("." + path)
 
     def readdir(self, path, offset):
+        os.chdir(self.root)
         persist_names = ['.', '..']
         sub_names = DBManager.query_readdir(path=path)
         sub_names = persist_names + sub_names
